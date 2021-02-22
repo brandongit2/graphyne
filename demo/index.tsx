@@ -8,8 +8,6 @@ export default function Index() {
       style={{
         width: "100vw",
         height: "100vh",
-        display: "grid",
-        placeItems: "stretch",
       }}
     >
       <Graphy />
