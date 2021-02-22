@@ -6,4 +6,8 @@ module.exports = {
     "@app": "./demo",
     graphy: "./src",
   },
+  plugins: ["@snowpack/plugin-postcss"],
+  buildOptions: {
+    sourcemap: true,
+  },
 };

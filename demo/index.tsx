@@ -4,9 +4,16 @@ import ReactDOM from "react-dom";
 
 export default function Index() {
   return (
-    <p>
+    <div
+      style={{
+        width: "100vw",
+        height: "100vh",
+        display: "grid",
+        placeItems: "stretch",
+      }}
+    >
       <Graphy />
-    </p>
+    </div>
   );
 }
 

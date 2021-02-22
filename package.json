@@ -1,17 +1,33 @@
 {
+  "name": "graphy",
+  "version": "0.0.1",
+  "homepage": "https://graphy.brandontsang.net",
+  "bugs": "https://github.com/brandongit2/graphy/issues",
+  "author": {
+    "name": "Brandon Tsang",
+    "email": "brandononline2@gmail.com",
+    "url": "https://brandontsang.net"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brandongit2/graphy.git"
+  },
   "scripts": {
     "start": "snowpack dev",
-    "build": "snowpack build",
-    "test": "echo \"This template does not include a test runner by default.\" && exit 1"
-  },
-  "devDependencies": {
-    "snowpack": "^3.0.1"
+    "build": "snowpack build"
   },
   "dependencies": {
+    "@snowpack/plugin-postcss": "^1.1.0",
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.1",
+    "autoprefixer": "^10.2.4",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "postcss": "^8.2.6",
+    "postcss-cli": "^8.3.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "snowpack": "^3.0.1",
+    "tailwindcss": "^2.0.3",
     "typescript": "^4.1.5"
   }
 }
