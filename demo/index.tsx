@@ -4,12 +4,7 @@ import ReactDOM from "react-dom";
 
 export default function Index() {
   return (
-    <div
-      style={{
-        width: "100vw",
-        height: "100vh",
-      }}
-    >
+    <div className="w-screen h-screen">
       <Graphy />
     </div>
   );

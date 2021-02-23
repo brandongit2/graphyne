@@ -3,44 +3,61 @@ import {useEffect} from "react";
 let velX = 0;
 let velY = 0;
 let zoom = 0;
+let isPanning = false;
 
 export function useInput() {
-  let tickFrame: number;
+  let mouseX: number = null;
+  let mouseY: number = null;
+  let prevMouseX: number = null;
+  let prevMouseY: number = null;
 
-  useEffect(() => {
-    function tick() {
-      // Slow down pan velocity
+  const tickEvent = new CustomEvent("tick");
+  function tick() {
+    if (isPanning && prevMouseX !== null && prevMouseY !== null) {
+      velX = mouseX - prevMouseX;
+      velY = mouseY - prevMouseY;
+    } else {
       velX *= 0.9;
       velY *= 0.9;
-
-      tickFrame = requestAnimationFrame(tick);
     }
-    tickFrame = requestAnimationFrame(tick);
 
-    let prevMouseX: number = null;
-    let prevMouseY: number = null;
-    function handleMouseMove(e: MouseEvent) {
-      if (e.buttons !== 1) return;
+    prevMouseX = mouseX;
+    prevMouseY = mouseY;
 
-      if (prevMouseX !== null && prevMouseY !== null) {
-        velX = e.clientX - prevMouseX;
-        velY = e.clientY - prevMouseY;
-      }
-      prevMouseX = e.clientX;
-      prevMouseY = e.clientY;
-    }
-    window.addEventListener("mousemove", handleMouseMove);
+    window.dispatchEvent(tickEvent);
+    requestAnimationFrame(tick);
+  }
+  tick();
 
-    function handleMouseUp() {
-      prevMouseX = null;
-      prevMouseY = null;
-    }
-    window.addEventListener("mouseup", handleMouseUp);
+  function handleMouseDown() {
+    isPanning = true;
+  }
+  window.addEventListener("mousedown", handleMouseDown);
 
+  function handleMouseMove(e: MouseEvent) {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  }
+  window.addEventListener("mousemove", handleMouseMove);
+
+  function handleMouseUp() {
+    isPanning = false;
+    prevMouseX = null;
+    prevMouseY = null;
+  }
+  window.addEventListener("mouseup", handleMouseUp);
+
+  function handleWheel(e: WheelEvent) {
+    zoom += e.deltaY / 100;
+  }
+  window.addEventListener("wheel", handleWheel);
+
+  useEffect(() => {
     return () => {
-      cancelAnimationFrame(tickFrame);
+      window.removeEventListener("mousedown", handleMouseDown);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("wheel", handleWheel);
     };
   });
 

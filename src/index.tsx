@@ -7,5 +7,5 @@ export default function Graphy() {
 
   useGraph(canvas);
 
-  return <canvas ref={canvas} style={{width: "100%", height: "100%"}} />;
+  return <canvas ref={canvas} className="w-full h-full" />;
 }

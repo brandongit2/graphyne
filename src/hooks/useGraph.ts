@@ -8,6 +8,7 @@ let ymin = -10;
 let ymax = 10;
 let width = 1024; // Temporary; will be set later
 let height = 1024; // Temporary; will be set later
+let pxPerUnit = 1;
 let d = 1; // devicePixelRatio
 
 export function useGraph(canvas: MutableRefObject<HTMLCanvasElement>) {
@@ -47,37 +48,41 @@ export function useGraph(canvas: MutableRefObject<HTMLCanvasElement>) {
       }
     }
 
-    d = window.devicePixelRatio;
-    width = canvas.current.getBoundingClientRect().width * d;
-    height = canvas.current.getBoundingClientRect().height * d;
-    canvas.current.width = width;
-    canvas.current.height = height;
+    d = devicePixelRatio;
+    calculateDims();
 
-    // Recalculate y bounds to get proper graph aspect ratio
-    const ratio = width / height;
-    const newYRange = (xmax - xmin) / ratio;
-    ymin = -newYRange / 2;
-    ymax = newYRange / 2;
+    function calculateDims() {
+      width = canvas.current.getBoundingClientRect().width * d;
+      height = canvas.current.getBoundingClientRect().height * d;
+      pxPerUnit = height / (ymax - ymin) / d;
+      canvas.current.width = width;
+      canvas.current.height = height;
+
+      // Recalculate x bounds to get proper graph aspect ratio
+      const ratio = width / height;
+      const newXRange = (ymax - ymin) * ratio;
+      xmin = -newXRange / 2;
+      xmax = newXRange / 2;
+    }
+    window.addEventListener("resize", calculateDims);
 
     const c = canvas.current.getContext("2d");
 
-    drawGrid(c);
-    let anim: number;
-    function frame() {
-      const [velX, velY] = getVelocity();
-      xmin -= velX / 100;
-      xmax -= velX / 100;
-      ymin += velY / 100;
-      ymax += velY / 100;
+    function handleTick() {
+      const [velX, velY, zoom] = getVelocity();
+      xmin -= velX / pxPerUnit;
+      xmax -= velX / pxPerUnit;
+      ymin += velY / pxPerUnit;
+      ymax += velY / pxPerUnit;
       c.clearRect(0, 0, width, height);
       drawGrid(c);
-
-      anim = requestAnimationFrame(frame);
     }
-    anim = requestAnimationFrame(frame);
+    window.addEventListener("tick", handleTick);
 
     return () => {
-      cancelAnimationFrame(anim);
+      window.removeEventListener("resize", calculateDims);
+      window.removeEventListener("resize", calculateDims);
+      window.removeEventListener("tick", handleTick);
     };
   }, [canvas]);
 }
