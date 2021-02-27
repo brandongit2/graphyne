@@ -4,10 +4,10 @@ import {useInput} from "./useInput";
 import {drawLine, floorToNearest, ceilToNearest} from "graphy/util";
 
 let center = [0, 0]; // Position of center of screen.
-let zoomFac = 1;
 let width = 1024; // Temporary; will be set later.
 let height = 1024; // Temporary; will be set later.
-const pxPerUnit = 100;
+let pxPerUnit = 100;
+let gridRes = 1;
 let d = 1; // devicePixelRatio
 
 export function useGraph(canvas: MutableRefObject<HTMLCanvasElement>) {
@@ -17,45 +17,60 @@ export function useGraph(canvas: MutableRefObject<HTMLCanvasElement>) {
 
     // Convert a grid x-coordinate to a pixel x-coordinate.
     function x(val: number) {
-      return Math.floor(width / 2 - (val - center[0]) * zoomFac * pxPerUnit);
+      return Math.floor(width / 2 - (val - center[0]) * pxPerUnit);
     }
 
     // Convert a grid y-coordinate to a pixel y-coordinate.
     function y(val: number) {
-      return Math.floor(height / 2 - (val - center[1]) * zoomFac * pxPerUnit);
+      return Math.floor(height / 2 - (val - center[1]) * pxPerUnit);
     }
 
     // Inverse of x().
     function xi(px: number) {
-      return (px - width / 2) / zoomFac / pxPerUnit + center[0];
+      return (px - width / 2) / pxPerUnit + center[0];
     }
 
     // Inverse of y().
     function yi(px: number) {
-      return (height / 2 - px) / zoomFac / pxPerUnit + center[1];
+      return (height / 2 - px) / pxPerUnit + center[1];
     }
 
     function drawGrid(c: CanvasRenderingContext2D) {
+      if (pxPerUnit * gridRes < 20) {
+        gridRes *= 10;
+      } else if (pxPerUnit * gridRes > 200) {
+        gridRes /= 10;
+      }
+      const majorGridRes = 5 * gridRes;
+
       // Minor lines
-      for (let i = Math.floor(xi(0)); i < Math.ceil(xi(width)); i++) {
+      for (
+        let i = floorToNearest(xi(0), gridRes);
+        i < ceilToNearest(xi(width), gridRes);
+        i += gridRes
+      ) {
         drawLine(c, x(i), 0, x(i), height, "#bbb", d);
       }
-      for (let i = Math.floor(yi(height)); i < Math.ceil(yi(0)); i++) {
+      for (
+        let i = floorToNearest(yi(height), gridRes);
+        i < ceilToNearest(yi(0), gridRes);
+        i += gridRes
+      ) {
         drawLine(c, 0, y(i), width, y(i), "#bbb", d);
       }
 
       // Major lines
       for (
-        let i = floorToNearest(xi(0), 5);
-        i < ceilToNearest(xi(width), 5);
-        i += 5
+        let i = floorToNearest(xi(0), majorGridRes);
+        i < ceilToNearest(xi(width), majorGridRes);
+        i += majorGridRes
       ) {
         drawLine(c, x(i), 0, x(i), height, "#777", 2 * d);
       }
       for (
-        let i = floorToNearest(yi(height), 5);
-        i < ceilToNearest(yi(0), 5);
-        i += 5
+        let i = floorToNearest(yi(height), majorGridRes);
+        i < ceilToNearest(yi(0), majorGridRes);
+        i += majorGridRes
       ) {
         drawLine(c, 0, y(i), width, y(i), "#777", 2 * d);
       }
@@ -82,10 +97,10 @@ export function useGraph(canvas: MutableRefObject<HTMLCanvasElement>) {
       const [velX, velY, newZoom] = getVelocity();
 
       center = [
-        center[0] + (velX / pxPerUnit / zoomFac) * d,
-        center[1] + (velY / pxPerUnit / zoomFac) * d,
+        center[0] + (velX / pxPerUnit) * d,
+        center[1] + (velY / pxPerUnit) * d,
       ];
-      zoomFac = 1.5 ** newZoom;
+      pxPerUnit = 100 * 1.5 ** newZoom;
 
       c.clearRect(0, 0, width, height);
       drawGrid(c);
