@@ -3,6 +3,7 @@ import {useEffect} from "react";
 let velX = 0;
 let velY = 0;
 let zoom = 0;
+let zoomTarget = 0;
 let isPanning = false;
 
 export function useInput() {
@@ -19,6 +20,10 @@ export function useInput() {
     } else {
       velX *= 0.9;
       velY *= 0.9;
+    }
+
+    if (Math.abs(zoom - zoomTarget) > 0.01) {
+      zoom += (zoomTarget - zoom) * 0.4;
     }
 
     prevMouseX = mouseX;
@@ -48,7 +53,7 @@ export function useInput() {
   window.addEventListener("mouseup", handleMouseUp);
 
   function handleWheel(e: WheelEvent) {
-    zoom += e.deltaY / 100;
+    zoomTarget -= e.deltaY / 100;
   }
   window.addEventListener("wheel", handleWheel);
 

@@ -2,10 +2,10 @@ import {MutableRefObject, useEffect} from "react";
 
 import {useInput} from "./useInput";
 
-let center = [0, 0]; // Position of center of screen
-let zoom = 1;
-let width = 1024; // Temporary; will be set later
-let height = 1024; // Temporary; will be set later
+let center = [0, 0]; // Position of center of screen.
+let zoomFac = 1;
+let width = 1024; // Temporary; will be set later.
+let height = 1024; // Temporary; will be set later.
 const pxPerUnit = 100;
 let d = 1; // devicePixelRatio
 
@@ -14,24 +14,24 @@ export function useGraph(canvas: MutableRefObject<HTMLCanvasElement>) {
   useEffect(() => {
     if (!canvas.current) return;
 
-    // Convert a grid x-coordinate to a pixel x-coordinate
+    // Convert a grid x-coordinate to a pixel x-coordinate.
     function x(val: number) {
-      return Math.floor(width / 2 - (val - center[0]) * pxPerUnit);
+      return Math.floor(width / 2 - (val - center[0]) * zoomFac * pxPerUnit);
     }
 
-    // Convert a grid y-coordinate to a pixel y-coordinate
+    // Convert a grid y-coordinate to a pixel y-coordinate.
     function y(val: number) {
-      return Math.floor(height / 2 - (val - center[1]) * 100);
+      return Math.floor(height / 2 - (val - center[1]) * zoomFac * pxPerUnit);
     }
 
-    // Inverse of x()
+    // Inverse of x().
     function xi(px: number) {
-      return (px - width / 2) / 100 + center[0];
+      return (px - width / 2) / zoomFac / pxPerUnit + center[0];
     }
 
-    // Inverse of y()
+    // Inverse of y().
     function yi(px: number) {
-      return (height / 2 - px) / pxPerUnit + center[1];
+      return (height / 2 - px) / zoomFac / pxPerUnit + center[1];
     }
 
     function drawGrid(c: CanvasRenderingContext2D) {
@@ -73,10 +73,10 @@ export function useGraph(canvas: MutableRefObject<HTMLCanvasElement>) {
       const [velX, velY, newZoom] = getVelocity();
 
       center = [
-        center[0] + (velX / pxPerUnit) * d,
-        center[1] + (velY / pxPerUnit) * d,
+        center[0] + (velX / pxPerUnit / zoomFac) * d,
+        center[1] + (velY / pxPerUnit / zoomFac) * d,
       ];
-      // zoom = newZoom;
+      zoomFac = 1.6 ** newZoom;
 
       c.clearRect(0, 0, width, height);
       drawGrid(c);
