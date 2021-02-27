@@ -1,4 +1,4 @@
 module.exports = {
-  purge: ["./src/**/*.html", "./src/**/*.js"],
+  purge: ["./demo/**/*.{html,tsx}", "./src/**/*.{html,tsx}"],
   darkMode: false,
 };
