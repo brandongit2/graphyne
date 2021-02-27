@@ -1,6 +1,7 @@
 import {MutableRefObject, useEffect} from "react";
 
 import {useInput} from "./useInput";
+import {drawLine, floorToNearest, ceilToNearest} from "graphy/util";
 
 let center = [0, 0]; // Position of center of screen.
 let zoomFac = 1;
@@ -35,25 +36,33 @@ export function useGraph(canvas: MutableRefObject<HTMLCanvasElement>) {
     }
 
     function drawGrid(c: CanvasRenderingContext2D) {
-      // Vertical lines
+      // Minor lines
       for (let i = Math.floor(xi(0)); i < Math.ceil(xi(width)); i++) {
-        c.lineWidth = (i % 5 === 0 ? 2 : 1) * d;
-        c.strokeStyle = i % 5 === 0 ? "#444" : "#888";
-        c.beginPath();
-        c.moveTo(x(i), 0);
-        c.lineTo(x(i), height);
-        c.stroke();
+        drawLine(c, x(i), 0, x(i), height, "#bbb", d);
+      }
+      for (let i = Math.floor(yi(height)); i < Math.ceil(yi(0)); i++) {
+        drawLine(c, 0, y(i), width, y(i), "#bbb", d);
       }
 
-      // Horizontal lines
-      for (let i = Math.floor(yi(height)); i < Math.ceil(yi(0)); i++) {
-        c.lineWidth = (i % 5 === 0 ? 2 : 1) * d;
-        c.strokeStyle = i % 5 === 0 ? "#444" : "#888";
-        c.beginPath();
-        c.moveTo(0, y(i));
-        c.lineTo(width, y(i));
-        c.stroke();
+      // Major lines
+      for (
+        let i = floorToNearest(xi(0), 5);
+        i < ceilToNearest(xi(width), 5);
+        i += 5
+      ) {
+        drawLine(c, x(i), 0, x(i), height, "#777", 2 * d);
       }
+      for (
+        let i = floorToNearest(yi(height), 5);
+        i < ceilToNearest(yi(0), 5);
+        i += 5
+      ) {
+        drawLine(c, 0, y(i), width, y(i), "#777", 2 * d);
+      }
+
+      // Axis lines
+      drawLine(c, x(0), 0, x(0), height, "black", 3 * d);
+      drawLine(c, 0, y(0), width, y(0), "black", 3 * d);
     }
 
     d = devicePixelRatio;
@@ -76,7 +85,7 @@ export function useGraph(canvas: MutableRefObject<HTMLCanvasElement>) {
         center[0] + (velX / pxPerUnit / zoomFac) * d,
         center[1] + (velY / pxPerUnit / zoomFac) * d,
       ];
-      zoomFac = 1.6 ** newZoom;
+      zoomFac = 1.5 ** newZoom;
 
       c.clearRect(0, 0, width, height);
       drawGrid(c);

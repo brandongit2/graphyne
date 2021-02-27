@@ -23,7 +23,7 @@ export function useInput() {
     }
 
     if (Math.abs(zoom - zoomTarget) > 0.01) {
-      zoom += (zoomTarget - zoom) * 0.4;
+      zoom += (zoomTarget - zoom) * 0.3;
     }
 
     prevMouseX = mouseX;

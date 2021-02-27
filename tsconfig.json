@@ -17,7 +17,8 @@
     "baseUrl": ".",
     "paths": {
       "@app/*": ["demo/*"],
-      "graphy": ["src"]
+      "graphy": ["src"],
+      "graphy/*": ["src/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
