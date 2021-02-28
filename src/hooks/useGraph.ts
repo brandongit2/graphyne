@@ -1,6 +1,6 @@
 import {MutableRefObject, useEffect} from "react";
 
-import {drawGrid} from "graphy/drawing";
+import {drawAxisLabels, drawGrid, setGridData} from "graphy/drawing";
 import {useInput} from "./useInput";
 
 let center = [0, 0]; // Position of center of screen.
@@ -37,14 +37,16 @@ export function useGraph(canvas: MutableRefObject<HTMLCanvasElement>) {
       ];
       pxPerUnit = 100 * 1.5 ** newZoom;
 
-      if (pxPerUnit * gridRes < 20) {
+      if (pxPerUnit * gridRes < 30) {
         gridRes *= 10;
-      } else if (pxPerUnit * gridRes > 200) {
+      } else if (pxPerUnit * gridRes > 300) {
         gridRes /= 10;
       }
 
       c.clearRect(0, 0, width, height);
-      drawGrid(c, {center, width, height, pxPerUnit, gridRes, d});
+      setGridData({center, width, height, pxPerUnit, gridRes, d});
+      drawGrid(c);
+      drawAxisLabels(c);
     }
     window.addEventListener("tick", handleTick);
 
