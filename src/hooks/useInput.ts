@@ -22,6 +22,11 @@ export function useInput() {
       velY *= 0.9;
     }
 
+    if (zoomTarget > 1000) {
+      zoomTarget = 1000;
+    } else if (zoomTarget < -1000) {
+      zoomTarget = -1000;
+    }
     if (Math.abs(zoom - zoomTarget) > 0.01) {
       zoom += (zoomTarget - zoom) * 0.3;
     }

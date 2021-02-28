@@ -1,9 +1,4 @@
-import {
-  floorToNearest,
-  ceilToNearest,
-  roundToNearest,
-  formatNumber,
-} from "graphy/util";
+import {floorToNearest, ceilToNearest} from "graphy/util";
 
 export interface GridData {
   center: number[];
@@ -95,8 +90,8 @@ export function drawAxisLabels(c: CanvasRenderingContext2D) {
       } else {
         return `${Math.round(num / gridRes)}e${Math.log10(gridRes)}`;
       }
-    } else if (num < 1) {
-      return num.toFixed(-Math.log10(gridRes));
+    } else if (num < 10) {
+      return num.toFixed(Math.max(-Math.log10(gridRes), 0));
     } else {
       return "" + Math.round(num);
     }
