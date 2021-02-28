@@ -21,7 +21,7 @@ export function setGridData(data: GridData) {
 // Convert a grid x-coordinate to a pixel x-coordinate.
 function x(val: number) {
   const {width, center, pxPerUnit} = gridData;
-  return Math.floor(width / 2 - (val - center[0]) * pxPerUnit);
+  return Math.floor(width / 2 + (val + center[0]) * pxPerUnit);
 }
 
 // Convert a grid y-coordinate to a pixel y-coordinate.
@@ -33,7 +33,7 @@ function y(val: number) {
 // Inverse of x().
 function xi(px: number) {
   const {width, center, pxPerUnit} = gridData;
-  return (px - width / 2) / pxPerUnit + center[0];
+  return (px - width / 2) / pxPerUnit - center[0];
 }
 
 // Inverse of y().
@@ -69,14 +69,14 @@ export function drawGrid(c: CanvasRenderingContext2D) {
     i < ceilToNearest(xi(width), majorGridRes);
     i += majorGridRes
   ) {
-    drawLine(c, x(i), 0, x(i), height, "#777", 2 * d);
+    drawLine(c, x(i), 0, x(i), height, "#888", 2 * d);
   }
   for (
     let i = floorToNearest(yi(height), majorGridRes);
     i < ceilToNearest(yi(0), majorGridRes);
     i += majorGridRes
   ) {
-    drawLine(c, 0, y(i), width, y(i), "#777", 2 * d);
+    drawLine(c, 0, y(i), width, y(i), "#888", 2 * d);
   }
 
   // Axis lines
@@ -85,13 +85,27 @@ export function drawGrid(c: CanvasRenderingContext2D) {
 }
 
 export function drawAxisLabels(c: CanvasRenderingContext2D) {
-  const {width, height, gridRes, d} = gridData;
+  const {width, height, gridRes, pxPerUnit, d} = gridData;
+  const _gridRes = pxPerUnit * gridRes < 90 ? gridRes * 5 : gridRes;
 
-  console.log(gridRes);
+  function formatNumber(num: number) {
+    if (Math.abs(Math.log10(gridRes)) > 4) {
+      if (pxPerUnit * gridRes < 90) {
+        return `${Math.round(num / gridRes) / 10}e${Math.log10(gridRes) + 1}`;
+      } else {
+        return `${Math.round(num / gridRes)}e${Math.log10(gridRes)}`;
+      }
+    } else if (num < 1) {
+      return num.toFixed(-Math.log10(gridRes));
+    } else {
+      return "" + Math.round(num);
+    }
+  }
+
   for (
-    let i = floorToNearest(xi(0), gridRes);
-    i < ceilToNearest(xi(width), gridRes);
-    i += gridRes
+    let i = floorToNearest(xi(0), _gridRes);
+    i < ceilToNearest(xi(width), _gridRes);
+    i += _gridRes
   ) {
     if (Math.abs(i / gridRes) < 0.0001) continue;
     drawText(
@@ -110,9 +124,9 @@ export function drawAxisLabels(c: CanvasRenderingContext2D) {
   }
 
   for (
-    let i = floorToNearest(yi(height), gridRes);
-    i < ceilToNearest(yi(0), gridRes);
-    i += gridRes
+    let i = floorToNearest(yi(height), _gridRes);
+    i < ceilToNearest(yi(0), _gridRes);
+    i += _gridRes
   ) {
     if (Math.abs(i / gridRes) < 0.0001) continue;
     drawText(
