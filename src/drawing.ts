@@ -86,9 +86,13 @@ export function drawAxisLabels(c: CanvasRenderingContext2D) {
   function formatNumber(num: number) {
     if (Math.abs(Math.log10(gridRes)) > 4) {
       if (pxPerUnit * gridRes < 90) {
-        return `${Math.round(num / gridRes) / 10}e${Math.log10(gridRes) + 1}`;
+        return `${Math.round(num / gridRes) / 10}e${
+          Math.round(Math.log10(gridRes)) + 1
+        }`;
       } else {
-        return `${Math.round(num / gridRes)}e${Math.log10(gridRes)}`;
+        return `${Math.round(num / gridRes)}e${Math.round(
+          Math.log10(gridRes)
+        )}`;
       }
     } else if (num < 10) {
       return num.toFixed(Math.max(-Math.log10(gridRes), 0));
@@ -108,7 +112,8 @@ export function drawAxisLabels(c: CanvasRenderingContext2D) {
       formatNumber(i),
       x(i),
       y(0) + 16 * d,
-      `${14 * d}px black`,
+      "black",
+      `${12 * d}px sans-serif`,
       "center",
       undefined,
       {
@@ -129,7 +134,8 @@ export function drawAxisLabels(c: CanvasRenderingContext2D) {
       formatNumber(i),
       x(0) - 6 * d,
       y(i),
-      `${14 * d}px black`,
+      "black",
+      `${12 * d}px sans-serif`,
       "right",
       "middle",
       {
@@ -162,7 +168,8 @@ export function drawText(
   text: string,
   x: number,
   y: number,
-  style: string,
+  fillStyle: string,
+  fontStyle: string,
   align?: CanvasTextAlign,
   baseline?: CanvasTextBaseline,
   stroke?: {
@@ -170,7 +177,8 @@ export function drawText(
     color: string;
   }
 ) {
-  c.font = style;
+  c.fillStyle = fillStyle;
+  c.font = fontStyle;
   c.textAlign = align;
   c.textBaseline = baseline;
 

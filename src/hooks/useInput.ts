@@ -4,9 +4,11 @@ let velX = 0;
 let velY = 0;
 let zoom = 0;
 let zoomTarget = 0;
+let zoomPos = [0, 0];
 let isPanning = false;
 
 export function useInput() {
+  const d = devicePixelRatio;
   let mouseX: number = null;
   let mouseY: number = null;
   let prevMouseX: number = null;
@@ -30,6 +32,7 @@ export function useInput() {
     if (Math.abs(zoom - zoomTarget) > 0.01) {
       zoom += (zoomTarget - zoom) * 0.3;
     }
+    zoomPos = [mouseX, mouseY];
 
     prevMouseX = mouseX;
     prevMouseY = mouseY;
@@ -45,8 +48,8 @@ export function useInput() {
   window.addEventListener("mousedown", handleMouseDown);
 
   function handleMouseMove(e: MouseEvent) {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
+    mouseX = e.clientX * d;
+    mouseY = e.clientY * d;
   }
   window.addEventListener("mousemove", handleMouseMove);
 
@@ -71,5 +74,5 @@ export function useInput() {
     };
   });
 
-  return () => [velX, velY, zoom];
+  return () => ({velX, velY, zoom, zoomPos});
 }

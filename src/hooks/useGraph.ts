@@ -11,7 +11,7 @@ let gridRes = 1;
 let d = 1; // devicePixelRatio
 
 export function useGraph(canvas: MutableRefObject<HTMLCanvasElement>) {
-  const getVelocity = useInput();
+  const getInput = useInput();
   useEffect(() => {
     if (!canvas.current) return;
 
@@ -29,13 +29,21 @@ export function useGraph(canvas: MutableRefObject<HTMLCanvasElement>) {
     const c = canvas.current.getContext("2d");
 
     function handleTick() {
-      const [velX, velY, newZoom] = getVelocity();
+      const {velX, velY, zoom: newZoom, zoomPos} = getInput();
 
+      // Zoom about cursor position.
       center = [
-        center[0] + (velX / pxPerUnit) * d,
-        center[1] + (velY / pxPerUnit) * d,
+        center[0] - (zoomPos[0] - width / 2) / pxPerUnit,
+        center[1] - (zoomPos[1] - height / 2) / pxPerUnit,
       ];
       pxPerUnit = 100 * 1.5 ** newZoom;
+      center = [
+        center[0] + (zoomPos[0] - width / 2) / pxPerUnit,
+        center[1] + (zoomPos[1] - height / 2) / pxPerUnit,
+      ];
+
+      // Translate center point.
+      center = [center[0] + velX / pxPerUnit, center[1] + velY / pxPerUnit];
 
       if (pxPerUnit * gridRes < 30) {
         gridRes *= 10;
