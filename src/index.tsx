@@ -1,10 +1,14 @@
-import React, {useEffect, useRef} from "react";
+import React, {useRef} from "react";
 
 import {useGraph} from "./hooks/useGraph";
 
-export default function Graphy() {
-  const canvas = useRef(null);
-  useGraph(canvas);
+interface GraphyProps {
+  functions: string[];
+}
 
-  return <canvas ref={canvas} className="w-full h-full" />;
+export default function Graphy({functions}: GraphyProps) {
+  const canvas = useRef(null);
+  useGraph(canvas, functions);
+
+  return <canvas ref={canvas} style={{width: "100%", height: "100%"}} />;
 }

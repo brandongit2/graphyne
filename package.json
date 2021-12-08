@@ -1,8 +1,15 @@
 {
-  "name": "graphy",
-  "version": "0.0.1",
-  "homepage": "https://graphy.brandontsang.net",
-  "bugs": "https://github.com/brandongit2/graphy/issues",
+  "name": "graphyne",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "demos/graphyne-demo-js",
+    "demos/graphyne-demo-react",
+    "packages/graphyne",
+    "packages/graphyne-react"
+  ],
+  "homepage": "https://graphyne.brandontsang.net",
+  "bugs": "https://github.com/brandongit2/graphyne/issues",
   "author": {
     "name": "Brandon Tsang",
     "email": "brandononline2@gmail.com",
@@ -10,24 +17,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/brandongit2/graphy.git"
+    "url": "git+https://github.com/brandongit2/graphyne.git"
   },
-  "scripts": {
-    "start": "snowpack dev",
-    "build": "snowpack build"
-  },
-  "dependencies": {
-    "@snowpack/plugin-postcss": "^1.1.0",
-    "@types/react": "^17.0.2",
-    "@types/react-dom": "^17.0.1",
-    "autoprefixer": "^10.2.4",
+  "devDependencies": {
     "eslint-plugin-react-hooks": "^4.2.0",
-    "postcss": "^8.2.6",
-    "postcss-cli": "^8.3.1",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "snowpack": "^3.0.1",
-    "tailwindcss": "^2.0.3",
-    "typescript": "^4.1.5"
+    "lerna": "^3.22.1"
   }
 }

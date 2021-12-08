@@ -1,0 +1,18 @@
+{
+  "name": "graphyne",
+  "version": "1.0.0",
+  "main": "bundle.js",
+  "author": "Brandon Tsang",
+  "license": "MIT",
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^8.2.0",
+    "cross-env": "^7.0.3",
+    "rollup": "^2.40.0",
+    "tslib": "^2.1.0",
+    "typescript": "^4.2.2"
+  }
+}

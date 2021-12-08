@@ -1,10 +1,9 @@
 /** @type {import("snowpack").SnowpackUserConfig} */
 
 module.exports = {
-  mount: {demo: "/", src: "/graphy"},
+  mount: {src: "/"},
   alias: {
-    "@app": "./demo",
-    graphy: "./src",
+    "@app": "./src",
   },
   plugins: ["@snowpack/plugin-postcss"],
   buildOptions: {

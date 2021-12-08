@@ -1,6 +1,7 @@
 import {floorToNearest, ceilToNearest} from "graphy/util";
 
 export interface GridData {
+  c: CanvasRenderingContext2D;
   center: number[];
   width: number;
   height: number;
@@ -37,8 +38,8 @@ function yi(px: number) {
   return (height / 2 - px) / pxPerUnit + center[1];
 }
 
-export function drawGrid(c: CanvasRenderingContext2D) {
-  const {width, height, gridRes, d} = gridData;
+export function drawGrid() {
+  const {c, width, height, gridRes, d} = gridData;
 
   const majorGridRes = 5 * gridRes;
 
@@ -79,8 +80,8 @@ export function drawGrid(c: CanvasRenderingContext2D) {
   drawLine(c, 0, y(0), width, y(0), "black", 3 * d);
 }
 
-export function drawAxisLabels(c: CanvasRenderingContext2D) {
-  const {width, height, gridRes, pxPerUnit, d} = gridData;
+export function drawAxisLabels() {
+  const {c, width, height, gridRes, pxPerUnit, d} = gridData;
   const _gridRes = pxPerUnit * gridRes < 90 ? gridRes * 5 : gridRes;
 
   function formatNumber(num: number) {
@@ -144,6 +145,19 @@ export function drawAxisLabels(c: CanvasRenderingContext2D) {
       }
     );
   }
+}
+
+export function drawGraph(func: string) {
+  const {c, width} = gridData;
+
+  c.beginPath();
+  let t = 0;
+  c.moveTo(xi(0), yi(eval(func)));
+  for (let i = 0; i < width; i++) {
+    t = xi(i);
+    c.lineTo(x(t), yi(eval(func)));
+  }
+  c.stroke();
 }
 
 export function drawLine(

@@ -1,6 +1,6 @@
 import {MutableRefObject, useEffect} from "react";
 
-import {drawAxisLabels, drawGrid, setGridData} from "graphy/drawing";
+import {drawAxisLabels, drawGraph, drawGrid, setGridData} from "graphy/drawing";
 import {useInput} from "./useInput";
 
 let center = [0, 0]; // Position of center of screen.
@@ -10,7 +10,10 @@ let pxPerUnit = 100;
 let gridRes = 1;
 let d = 1; // devicePixelRatio
 
-export function useGraph(canvas: MutableRefObject<HTMLCanvasElement>) {
+export function useGraph(
+  canvas: MutableRefObject<HTMLCanvasElement>,
+  functions: string[]
+) {
   const getInput = useInput();
   useEffect(() => {
     if (!canvas.current) return;
@@ -52,9 +55,13 @@ export function useGraph(canvas: MutableRefObject<HTMLCanvasElement>) {
       }
 
       c.clearRect(0, 0, width, height);
-      setGridData({center, width, height, pxPerUnit, gridRes, d});
-      drawGrid(c);
-      drawAxisLabels(c);
+      setGridData({c, center, width, height, pxPerUnit, gridRes, d});
+      drawGrid();
+      drawAxisLabels();
+      console.log(functions);
+      functions.forEach((func) => {
+        drawGraph(func);
+      });
     }
     window.addEventListener("tick", handleTick);
 
